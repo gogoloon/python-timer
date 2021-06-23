@@ -1,5 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as messagebox
+from datetime import datetime
+from datetime import timedelta
 
 
 class TimerMain():
@@ -31,6 +33,7 @@ class TimerMain():
             self.__text_start_stop_button.set("Stop")
             self.__remain_min.set(int(self.__text_min.get()))
             self.__remain_sec.set(int(self.__text_sec.get()))
+            self.calc_expect_finish_time()
             self.exec_timer()
 
         else:
@@ -38,6 +41,7 @@ class TimerMain():
             self.__text_start_stop_button.set("Start")
             self.__remain_sec.set(str("-"))
             self.__remain_min.set(str("-"))
+            self.__scheduled_finish_time.set(str("-"))
 
     def exec_timer(self):
 
@@ -47,10 +51,10 @@ class TimerMain():
                 self.__start_status = True
                 self.__text_start_stop_button.set("Start")
                 messagebox.showinfo("timer", "タイマーが終了しました！！")
+
             else:
                 __tmp_time_min = int(self.__remain_min.get())
                 __tmp_time_sec = int(self.__remain_sec.get())
-
                 if __tmp_time_min >= 0:
                     __tmp_time_sec -= 1
                     self.__remain_sec.set(str(__tmp_time_sec))
@@ -59,8 +63,15 @@ class TimerMain():
                     __tmp_time_min -= 1
                     self.__remain_min.set(str(__tmp_time_min))
                     self.__remain_sec.set("59")
+                    self.calc_expect_finish_time()
 
             self.__frame.after(1000, self.exec_timer)
+
+    def calc_expect_finish_time(self):
+        __remain_sec_total = int(self.__remain_min.get()) * 60 + int(self.__remain_sec.get())
+        __scheduled_finish_time = datetime.now() + timedelta(seconds=__remain_sec_total)
+        self.__scheduled_finish_time.set(__scheduled_finish_time.strftime('%m/%d %H:%M:%S'))
+
 
     @property
     def text_min(self):
