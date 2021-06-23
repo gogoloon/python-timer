@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 
 
 class TimerMain():
@@ -24,6 +25,7 @@ class TimerMain():
         self.__scheduled_finish_time.set(str("-"))
 
     def click_timer_button(self):
+
         if self.__start_status:
             self.__start_status = False
             self.__text_start_stop_button.set("Stop")
@@ -40,17 +42,23 @@ class TimerMain():
     def exec_timer(self):
 
         if not self.__start_status:
-            __tmp_time_min = int(self.__remain_min.get())
-            __tmp_time_sec = int(self.__remain_sec.get())
+            if int(self.__remain_min.get()) == 0 and int(
+                    self.__remain_sec.get()) == 0:
+                self.__start_status = True
+                self.__text_start_stop_button.set("Start")
+                messagebox.showinfo("timer", "タイマーが終了しました！！")
+            else:
+                __tmp_time_min = int(self.__remain_min.get())
+                __tmp_time_sec = int(self.__remain_sec.get())
 
-            if __tmp_time_min >= 0:
-                __tmp_time_sec -= 1
-                self.__remain_sec.set(str(__tmp_time_sec))
+                if __tmp_time_min >= 0:
+                    __tmp_time_sec -= 1
+                    self.__remain_sec.set(str(__tmp_time_sec))
 
-            if __tmp_time_sec == -1:
-                __tmp_time_min -= 1
-                self.__remain_min.set(str(__tmp_time_min))
-                self.__remain_sec.set("59")
+                if __tmp_time_sec == -1:
+                    __tmp_time_min -= 1
+                    self.__remain_min.set(str(__tmp_time_min))
+                    self.__remain_sec.set("59")
 
             self.__frame.after(1000, self.exec_timer)
 
