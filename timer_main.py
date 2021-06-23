@@ -24,16 +24,35 @@ class TimerMain():
         self.__scheduled_finish_time.set(str("-"))
 
     def click_timer_button(self):
-        self.__remain_sec.set(int(self.__text_sec.get()))
-        self.exec_timer()
+        if self.__start_status:
+            self.__start_status = False
+            self.__text_start_stop_button.set("Stop")
+            self.__remain_min.set(int(self.__text_min.get()))
+            self.__remain_sec.set(int(self.__text_sec.get()))
+            self.exec_timer()
+
+        else:
+            self.__start_status = True
+            self.__text_start_stop_button.set("Start")
+            self.__remain_sec.set(str("-"))
+            self.__remain_min.set(str("-"))
 
     def exec_timer(self):
-        __tmp_time_sec = int(self.__remain_sec.get())
 
-        __tmp_time_sec -= 1
-        self.__remain_sec.set(str(__tmp_time_sec))
+        if not self.__start_status:
+            __tmp_time_min = int(self.__remain_min.get())
+            __tmp_time_sec = int(self.__remain_sec.get())
 
-        self.__frame.after(1000, self.exec_timer)
+            if __tmp_time_min >= 0:
+                __tmp_time_sec -= 1
+                self.__remain_sec.set(str(__tmp_time_sec))
+
+            if __tmp_time_sec == -1:
+                __tmp_time_min -= 1
+                self.__remain_min.set(str(__tmp_time_min))
+                self.__remain_sec.set("59")
+
+            self.__frame.after(1000, self.exec_timer)
 
     @property
     def text_min(self):
